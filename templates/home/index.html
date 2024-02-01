@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container mt-5">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        <strong>Holy guacamole!</strong> {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+      {% endif %}
+     
+    {% comment %} <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li> {% endcomment %}
+    
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create">
+        Add New
+      </button>
+    <div class="card">
+        <div class="card-body">
+    <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Sn</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Location</th>
+            <th scope="col">Description</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if not student %}
+          <tr>
+            <td>
+            <h1>no data</h1>
+            <td>
+          </tr>
+          
+          {% else %}
+            {% for i in student %}
+          <tr>
+            <td>{{i.id}}</td>
+            <td>{{i.name}}</td>
+            <td>{{i.email}}</td>
+            <td>{{i.phone}}</td>
+            <td>{{i.location}}</td>
+            <td>{{i.description}}</td>
+            <td>
+              
+                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#edit-{{forloop.counter}}">
+                    Edit
+                  </button>
+                  <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete-{{forloop.counter}}">
+                    Delete
+                  </button>
+                  
+                  
+            </td>
+          
+          </tr>
+          {% endfor %}
+          {% endif %}
+         
+        </tbody>
+      </table>
+    </div>
+</div>
+</div>
+
+{% comment %} edit modal {% endcomment %}
+<!-- Button trigger modal -->
+
+  <!-- Modal new create -->
+
+  <div class="modal fade" id="create" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add New Data</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form method="POST" action="{% url "addnew" %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Name</label>
+                    <input type="text" name="name" class="form-control" id="exampleInputText" aria-describedby="nameHelp">
+                  </div>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Email address</label>
+                  <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Phone</label>
+                    <input type="text" name="phone" class="form-control" id="exampleInputText" aria-describedby="nameHelp">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Location</label>
+                    <input type="text" name="location" class="form-control" id="exampleInputText" aria-describedby="nameHelp">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleFormControlTextarea1">Description</label>
+                    <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="3"></textarea>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add New</button>
+                  </div>
+               
+                {% comment %} <button type="submit" class="btn btn-primary">Submit</button> {% endcomment %}
+              </form>
+        </div>
+       
+      </div>
+    </div>
+  </div>
+
+  {% comment %} update edit {% endcomment %}
+   <!-- Modal new edit -->
+   {% for i in student %}
+
+   <div class="modal fade" id="edit-{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form method="POST" action="/update/ {{i.id}}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Name</label>
+                    <input type="text" name="name" value="{{i.name}}" class="form-control" id="exampleInputText" aria-describedby="nameHelp">
+                  </div>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Email address</label>
+                  <input type="email" name="email" value="{{i.email}}" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Phone</label>
+                    <input type="text" name="phone" value="{{i.phone}}" class="form-control" id="exampleInputText" aria-describedby="nameHelp">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Location</label>
+                    <input type="text" name="location" value="{{i.location}}" class="form-control" id="exampleInputText" aria-describedby="nameHelp">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleFormControlTextarea1">Description</label>
+                    <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="3">{{i.description}}</textarea>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                  </div>
+               
+                {% comment %} <button type="submit" class="btn btn-primary">Submit</button> {% endcomment %}
+              </form>
+        </div>
+       
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+  {% comment %} delete modal start {% endcomment %}
+  <!-- Button trigger modal -->
+
+{% for i in student %}
+<!-- Modal -->
+<div class="modal fade" id="delete-{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h4>{{i.name}}<br>Are you sure want to delete?</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+       <a href="/delete/{{i.id}}"> <button type="submit" class="btn btn-primary">Yes</button></a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+
+{% endblock body %}
